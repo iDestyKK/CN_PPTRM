@@ -26,6 +26,10 @@ Would you prefer a **90.6 KB** file that contains everything, can be replayed
 at any speed you wish, and can be recorded at a later time if you wish to put
 it on YouTube? Yeah, me too! :)
 
+Now, obviously, you're going to have to replay the gameplay and record it to
+put clips up on YouTube or other video sites. But it's still nice to have the
+original replay file right?
+
 ## Format Details
 I haven't looked too much into the format of `data.bin`, but figuring out how
 replays were stored was as simple as making a clean save, making a replay, and
@@ -35,5 +39,5 @@ Replays are stored in two parts: `PREP` (replay information) and `DATA` (key
 presses, events, etc). Each of these are of a fixed length. Each `PREP`
 section takes up exactly 360 bytes, and each `DATA` section takes up
 92480 bytes. There is a limit to how large a replay can be. Since they are all
-a fixed length, my tools simply jump exactly to where the data is stored and
-dump the contents to a file. Simple huh?
+a fixed length, my tool simply jumps exactly to where the data is stored and
+dumps the contents to a file. Simple huh?
