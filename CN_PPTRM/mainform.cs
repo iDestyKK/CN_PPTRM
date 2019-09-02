@@ -13,6 +13,7 @@
 
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -260,6 +261,31 @@ namespace ppt_replay_gui {
             }
         }
 
+        //Okay, and some utility functions to make my life easier
+        public byte[] gz_compress(byte[] bytes) {
+            using (var ms = new MemoryStream())
+            using (var gzs = new GZipStream(ms, CompressionLevel.Optimal)) {
+                gzs.Write(bytes, 0, bytes.Length);
+                gzs.Close();
+                return ms.ToArray();
+            }
+        }
+
+        public byte[] gz_decompress(byte[] bytes) {
+            try {
+                using (var ms = new MemoryStream(bytes))
+                using (var res = new MemoryStream())
+                using (var gzs = new GZipStream(ms, CompressionMode.Decompress)) {
+                    gzs.CopyTo(res);
+                    return res.ToArray();
+                }
+            }
+            catch (System.IO.InvalidDataException) {
+                //That was not a properly encoded GZip file. So just assume it's RAW.
+                return bytes;
+            }
+        }
+
         //Oh and let's just make it global. Yeah?
         public data_bin DATA;
 
@@ -349,8 +375,11 @@ namespace ppt_replay_gui {
                 string path = saveFileDialog_dem.FileName;
 
                 //Read the data and extract it accordingly.
-                byte[] buffer = DATA.generate_dem(Convert.ToUInt32(label_id.Text));
+                byte[] buffer = gz_compress(
+                    DATA.generate_dem(Convert.ToUInt32(label_id.Text))
+                );
 
+                //File.WriteAllBytes(path, buffer);
                 File.WriteAllBytes(path, buffer);
 
                 MessageBox.Show("Replay Saved Successfully.");
@@ -360,7 +389,9 @@ namespace ppt_replay_gui {
         private void Button_import_replay_Click(object sender, EventArgs e) {
             if (openFileDialog_dem.ShowDialog() == DialogResult.OK) {
 
-                byte[] buffer = File.ReadAllBytes(openFileDialog_dem.FileName);
+                byte[] buffer = gz_decompress(
+                    File.ReadAllBytes(openFileDialog_dem.FileName)
+                );
                 DATA.import_dem(buffer, Convert.ToUInt32(label_id.Text));
                 DATA.fill_tree(treeView_replays);
 
@@ -384,7 +415,10 @@ namespace ppt_replay_gui {
 
             if (folderBrowserDialog_exportAll.ShowDialog() == DialogResult.OK) {
                 for (uint i = 0; i < DATA.replay_count; i++) {
-                    byte[] buffer = DATA.generate_dem(i);
+                    byte[] buffer = gz_compress(
+                        DATA.generate_dem(i)
+                    );
+
                     File.WriteAllBytes(
                         folderBrowserDialog_exportAll.SelectedPath + "\\" + DATA.time_format(i) + ".dem",
                         buffer
@@ -406,7 +440,9 @@ namespace ppt_replay_gui {
             //Okay... let's just assume we can import then (probably a really bad idea)
             if (openFileDialog_dem.ShowDialog() == DialogResult.OK) {
 
-                byte[] buffer = File.ReadAllBytes(openFileDialog_dem.FileName);
+                byte[] buffer = gz_decompress(
+                    File.ReadAllBytes(openFileDialog_dem.FileName)
+                );
                 DATA.import_dem(buffer, DATA.replay_count);
 
                 DATA.replay_count++;
