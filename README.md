@@ -1,6 +1,6 @@
 # CN\_PPTRM
 
-### Version 0.1.0 (Last Updated: 2019/09/02)
+### Version 0.2.0 (Last Updated: 2019/09/02)
 
 ## About
 CN\_PPTRM (Clara Nguyen's Puyo Puyo Tetris Replay Manager) is a tool which let
@@ -19,12 +19,13 @@ do the job just as well (and be a bit more convenient).
 It stands for "Demo", and I named it that because of how other games (notably
 Half-Life, Quake, etc) use [Demo Recording](https://wiki.sourceruns.org/wiki/Demo_Recording)
 to record key inputs and capture packets to be able to recreate gameplay at
-a later time.
+a later time. As of v0.2.0, these files are also compressed with gzip. They
+happen to compress really well... going from 90.6 KB to around 4-5 KB!
 
 ## "Why use this when I can use on-screen recorders like Fraps or Shadowplay, then delete the replay?"
-Would you prefer a **90.6 KB** file that contains everything, can be replayed
-at any speed you wish, and can be recorded at a later time if you wish to put
-it on YouTube? Yeah, me too! :)
+Would you prefer a file of **up to 91 KB** that contains everything, can be
+replayed at any speed you wish, and can be recorded at a later time if you wish
+to put it on YouTube? Yeah, me too! :)
 
 Now, obviously, you're going to have to replay the gameplay and record it to
 put clips up on YouTube or other video sites. But it's still nice to have the

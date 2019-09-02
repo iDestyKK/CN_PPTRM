@@ -70,7 +70,7 @@
             this.groupBox2.Controls.Add(this.label2);
             this.groupBox2.Location = new System.Drawing.Point(12, 124);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(440, 113);
+            this.groupBox2.Size = new System.Drawing.Size(440, 166);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Tool Details";
@@ -84,9 +84,11 @@
             this.richTextBox1.Location = new System.Drawing.Point(10, 77);
             this.richTextBox1.Name = "richTextBox1";
             this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(424, 30);
+            this.richTextBox1.Size = new System.Drawing.Size(424, 83);
             this.richTextBox1.TabIndex = 2;
-            this.richTextBox1.Text = "0.1.0 (2019/09/02)\n - Initial Release";
+            this.richTextBox1.Text = "0.2.0 (2019/09/02)\n - Added GZip Compression. All new DEM files will be compresse" +
+    "d by default. The program can still import uncompressed ones.\n\n0.1.0 (2019/09/02" +
+    ")\n - Initial Release";
             // 
             // label2
             // 
@@ -96,13 +98,13 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(427, 57);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Version: 0.1.0\r\nLast Updated: 2019/09/02\r\n\r\nChangelog:";
+            this.label2.Text = "Version: 0.2.0\r\nLast Updated: 2019/09/02\r\n\r\nChangelog:";
             // 
             // about
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(464, 249);
+            this.ClientSize = new System.Drawing.Size(464, 302);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
