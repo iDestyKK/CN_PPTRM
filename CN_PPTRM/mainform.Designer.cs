@@ -120,26 +120,26 @@
             // importSaveToolStripMenuItem
             // 
             this.importSaveToolStripMenuItem.Name = "importSaveToolStripMenuItem";
-            this.importSaveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.importSaveToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.importSaveToolStripMenuItem.Text = "Import Save";
             this.importSaveToolStripMenuItem.Click += new System.EventHandler(this.ImportSaveToolStripMenuItem_Click);
             // 
             // exportSaveToolStripMenuItem
             // 
             this.exportSaveToolStripMenuItem.Name = "exportSaveToolStripMenuItem";
-            this.exportSaveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exportSaveToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.exportSaveToolStripMenuItem.Text = "Export Save";
             this.exportSaveToolStripMenuItem.Click += new System.EventHandler(this.ExportSaveToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(134, 6);
             // 
             // quitToolStripMenuItem
             // 
             this.quitToolStripMenuItem.Name = "quitToolStripMenuItem";
-            this.quitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.quitToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.quitToolStripMenuItem.Text = "Quit";
             // 
             // toolsToolStripMenuItem
@@ -193,7 +193,7 @@
             this.treeView_replays.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.treeView_replays.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.treeView_replays.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.treeView_replays.Location = new System.Drawing.Point(0, 0);
             this.treeView_replays.Name = "treeView_replays";
             this.treeView_replays.Size = new System.Drawing.Size(218, 292);
@@ -253,7 +253,7 @@
             this.button_delete_replay.ForeColor = System.Drawing.SystemColors.ControlLight;
             this.button_delete_replay.Location = new System.Drawing.Point(7, 225);
             this.button_delete_replay.Name = "button_delete_replay";
-            this.button_delete_replay.Size = new System.Drawing.Size(215, 23);
+            this.button_delete_replay.Size = new System.Drawing.Size(214, 23);
             this.button_delete_replay.TabIndex = 2;
             this.button_delete_replay.Text = "Delete Replay";
             this.button_delete_replay.UseVisualStyleBackColor = false;
@@ -267,7 +267,7 @@
             this.button_import_replay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_import_replay.Location = new System.Drawing.Point(6, 19);
             this.button_import_replay.Name = "button_import_replay";
-            this.button_import_replay.Size = new System.Drawing.Size(215, 23);
+            this.button_import_replay.Size = new System.Drawing.Size(214, 23);
             this.button_import_replay.TabIndex = 1;
             this.button_import_replay.Text = "Replace Replay";
             this.button_import_replay.UseVisualStyleBackColor = true;
@@ -281,7 +281,7 @@
             this.button_extract_replay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_extract_replay.Location = new System.Drawing.Point(6, 48);
             this.button_extract_replay.Name = "button_extract_replay";
-            this.button_extract_replay.Size = new System.Drawing.Size(215, 23);
+            this.button_extract_replay.Size = new System.Drawing.Size(214, 23);
             this.button_extract_replay.TabIndex = 0;
             this.button_extract_replay.Text = "Extract Replay";
             this.button_extract_replay.UseVisualStyleBackColor = true;
