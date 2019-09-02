@@ -259,6 +259,38 @@ namespace ppt_replay_gui {
 
                 return hexdump;
             }
+
+            //Linked-List-like Functionality
+
+            /*
+             * data_bin.erase
+             * 
+             * Erases a replay in the save. This will also move all sequential
+             * replays up by 1.
+             */
+
+            public void erase(uint id) {
+                //Copy blocks of data over
+                if (id != 49) {
+                    Buffer.BlockCopy(
+                        bytes, (int)PREP_ADDR[id + 1],
+                        bytes, (int)PREP_ADDR[id],
+                        (int) PREP_LEN * (50 - ((int) id + 1))
+                    );
+
+                    Buffer.BlockCopy(
+                        bytes, (int)DATA_ADDR[id + 1],
+                        bytes, (int)DATA_ADDR[id],
+                        (int) DATA_LEN * (50 - ((int)id + 1))
+                    );
+                }
+
+                //Zero out the 50th PREP and DATA spots.
+                Array.Clear(bytes, (int) PREP_ADDR[49], (int) PREP_LEN);
+                Array.Clear(bytes, (int) DATA_ADDR[49], (int) DATA_LEN);
+
+                replay_count--;
+            }
         }
 
         //Okay, and some utility functions to make my life easier
@@ -288,6 +320,7 @@ namespace ppt_replay_gui {
 
         //Oh and let's just make it global. Yeah?
         public data_bin DATA;
+        public int selected_id;
 
         private string wintitle = "CN_PPTRM - Puyo Puyo Tetris Replay Manager";
 
@@ -305,6 +338,8 @@ namespace ppt_replay_gui {
                 PREP_ADDR[i] = PREP_LOC + (PREP_LEN * i);
                 DATA_ADDR[i] = DATA_LOC + (DATA_LEN * i);
             }
+
+            selected_id = -1;
         }
 
         private void AboutToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -335,6 +370,8 @@ namespace ppt_replay_gui {
                     //Get the replay number
                     string label = e.Node.Text.Substring(0, 2);
                     uint   id    = Convert.ToUInt32(label);
+
+                    selected_id = (int) id;
 
                     //Okay, now let's fill out some stuff.
                     label_id.Text = id.ToString();
@@ -367,7 +404,15 @@ namespace ppt_replay_gui {
                         PREP_LEN
                     );
                 }
+                else {
+                    selected_id = -1;
+                }
             }
+            else {
+                selected_id = -1;
+            }
+
+            tab_replay_control.Visible = (selected_id != -1);
         }
 
         private void Button_extract_replay_Click(object sender, EventArgs e) {
@@ -388,6 +433,19 @@ namespace ppt_replay_gui {
 
         private void Button_import_replay_Click(object sender, EventArgs e) {
             if (openFileDialog_dem.ShowDialog() == DialogResult.OK) {
+                //TODO: Make replay comparison box. For now, we'll just ask if
+                //the user is sure they want to carry on with replacing it.
+                //Are you sure you want to do this?
+                DialogResult confirm = MessageBox.Show(
+                    "Are you sure you want to overwrite this replay?",
+                    "Confirm Replacement",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button2
+                );
+
+                if (confirm != DialogResult.Yes)
+                    return;
 
                 byte[] buffer = gz_decompress(
                     File.ReadAllBytes(openFileDialog_dem.FileName)
@@ -457,13 +515,28 @@ namespace ppt_replay_gui {
         }
 
         private void ClearAllReplaysToolStripMenuItem_Click(object sender, EventArgs e) {
-            //For now, let's just not give a confirmation.
+            //Are you sure you want to do this?
+            DialogResult confirm = MessageBox.Show(
+                "You are about to delete all replays in this save. Are you sure?",
+                "Confirm Deletion",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2
+            );
+
+            if (confirm != DialogResult.Yes)
+                return;
+
             Array.Clear(DATA.bytes, (int) PREP_LOC, (int) PREP_LEN * 50);
             Array.Clear(DATA.bytes, (int) DATA_LOC, (int) DATA_LEN * 50);
 
             DATA.replay_count = 0;
 
             DATA.fill_tree(treeView_replays);
+
+            selected_id = -1;
+
+            tab_replay_control.Visible = false;
         }
 
         private void ExportSaveToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -478,29 +551,23 @@ namespace ppt_replay_gui {
         private void Button_delete_replay_Click(object sender, EventArgs e) {
             //For now, let's just assume that the user doesn't need to confirm
             //the total annihilation of their replay. So be it.
+
+            //Do you really want to do this?
+            DialogResult confirm = MessageBox.Show(
+                "You are about to delete this replay. Are you sure?",
+                "Confirm Deletion",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question,
+                MessageBoxDefaultButton.Button2
+            );
+
+            if (confirm != DialogResult.Yes)
+                return;
+
             int id = Convert.ToInt32(label_id.Text);
 
-            //Copy blocks of data over
-            if (id != 49) {
-                Buffer.BlockCopy(
-                    DATA.bytes, (int)PREP_ADDR[id + 1],
-                    DATA.bytes, (int)PREP_ADDR[id    ],
-                    (int) PREP_LEN * (50 - (id + 1))
-                );
-
-                Buffer.BlockCopy(
-                    DATA.bytes, (int)DATA_ADDR[id + 1],
-                    DATA.bytes, (int)DATA_ADDR[id    ],
-                    (int) DATA_LEN * (50 - (id + 1))
-                );
-            }
-
-            //Zero out the 50th PREP and DATA spots.
-            Array.Clear(DATA.bytes, (int) PREP_ADDR[49], (int) PREP_LEN);
-            Array.Clear(DATA.bytes, (int) DATA_ADDR[49], (int) DATA_LEN);
-
-            DATA.replay_count--;
-
+            //Remove it from the save and update the GUI.
+            DATA.erase((uint) id);
             DATA.fill_tree(treeView_replays);
 
             //Select the one that got added
@@ -512,6 +579,10 @@ namespace ppt_replay_gui {
                     (id).ToString("00"), true
                 )[0];
             }
+
+            selected_id = (int) id;
+
+            tab_replay_control.Visible = (selected_id != -1);
         }
     }
 }
