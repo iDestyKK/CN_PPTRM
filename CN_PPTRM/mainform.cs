@@ -123,14 +123,15 @@ namespace ppt_replay_gui {
                 uint offset = PREP_ADDR[id] + 0x30 + (0x3C * player);
                 string ret = "";
 
-                for (uint i = 0;; i += 2) {
-                    if (bytes[offset + i] == 0x00)
+                //Get string length first
+                int len;
+                for (len = 0;; len += 2) {
+                    if (bytes[offset + len] == 0x00 && bytes[offset + len + 1] == 0x00)
                         break;
-
-                    ret += (char) bytes[offset + i];
                 }
 
-                return ret;
+                //Extract UTF-16LE from byte array
+                return Encoding.Unicode.GetString(bytes, (int) offset, len);
             }
 
             //Duration Data
@@ -358,7 +359,7 @@ namespace ppt_replay_gui {
                 DATA.open();
                 DATA.fill_tree(treeView_replays);
 
-                tab_replay_control.Visible = true;
+                //tab_replay_control.Visible = true;
             }
         }
 
