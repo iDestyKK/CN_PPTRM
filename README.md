@@ -15,6 +15,11 @@ This is based off of my [ppt\_replay\_tools](https://github.com/iDestyKK/ppt_rep
 which I also wrote to manage replays in this game. I just wanted a nice GUI to
 do the job just as well (and be a bit more convenient).
 
+## Preview
+<p align = "center">
+	<img src = "/img/preview.png?raw=true"/>
+</p>
+
 ## What is "dem"?
 It stands for "Demo", and I named it that because of how other games (notably
 Half-Life, Quake, etc) use [Demo Recording](https://wiki.sourceruns.org/wiki/Demo_Recording)
