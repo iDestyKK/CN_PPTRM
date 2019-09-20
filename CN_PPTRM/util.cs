@@ -3,6 +3,9 @@
  * 
  * Description:
  *     Defines a few functions that'll probably be used quite a few times...
+ * 
+ * Author:
+ *     iDestyKK
  */
 
 using System;
@@ -14,7 +17,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ppt_replay_gui {
-    class UTIL {
+    public class UTIL {
         public byte[] gz_compress(byte[] bytes) {
             using (var ms = new MemoryStream())
             using (var gzs = new GZipStream(ms, CompressionLevel.Optimal)) {
