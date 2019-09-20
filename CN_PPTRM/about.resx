@@ -125,7 +125,6 @@ If there's a problem, contact me at my Twitter (@iDestyKK) or on my GitHub (iDes
   <data name="richTextBox1.Text" xml:space="preserve">
     <value>0.3.0 (2019/09/20)
  - Added confirmation for all actions that relate to insert/replace/deletion of replay data.
- - Added a replay comparison window for confirming replacement of replays.
  - Slight GUI tweaks
  - Code Reorganisation
 
