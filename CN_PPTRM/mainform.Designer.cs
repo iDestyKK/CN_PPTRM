@@ -149,27 +149,27 @@
             this.insertReplayToolStripMenuItem,
             this.clearAllReplaysToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(46, 20);
             this.toolsToolStripMenuItem.Text = "&Tools";
             // 
             // extractAllReplaysToolStripMenuItem
             // 
             this.extractAllReplaysToolStripMenuItem.Name = "extractAllReplaysToolStripMenuItem";
-            this.extractAllReplaysToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.extractAllReplaysToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.extractAllReplaysToolStripMenuItem.Text = "&Extract all replays";
             this.extractAllReplaysToolStripMenuItem.Click += new System.EventHandler(this.ExtractAllReplaysToolStripMenuItem_Click);
             // 
             // insertReplayToolStripMenuItem
             // 
             this.insertReplayToolStripMenuItem.Name = "insertReplayToolStripMenuItem";
-            this.insertReplayToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.insertReplayToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.insertReplayToolStripMenuItem.Text = "&Insert replay";
             this.insertReplayToolStripMenuItem.Click += new System.EventHandler(this.InsertReplayToolStripMenuItem_Click);
             // 
             // clearAllReplaysToolStripMenuItem
             // 
             this.clearAllReplaysToolStripMenuItem.Name = "clearAllReplaysToolStripMenuItem";
-            this.clearAllReplaysToolStripMenuItem.Size = new System.Drawing.Size(164, 22);
+            this.clearAllReplaysToolStripMenuItem.Size = new System.Drawing.Size(165, 22);
             this.clearAllReplaysToolStripMenuItem.Text = "&Clear all replays";
             this.clearAllReplaysToolStripMenuItem.Click += new System.EventHandler(this.ClearAllReplaysToolStripMenuItem_Click);
             // 
@@ -568,7 +568,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(482, 292);
             this.label3.TabIndex = 3;
-            this.label3.Text = "Open a replay and select it from the list to the left.";
+            this.label3.Text = "Open a save and select a replay from the list to the left.";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // openFileDialog_data
