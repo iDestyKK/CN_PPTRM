@@ -58,8 +58,10 @@
     <Compile Include="mainform.Designer.cs">
       <DependentUpon>mainform.cs</DependentUpon>
     </Compile>
+    <Compile Include="ppt.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="util.cs" />
     <EmbeddedResource Include="about.resx">
       <DependentUpon>about.cs</DependentUpon>
     </EmbeddedResource>
