@@ -30,7 +30,7 @@ namespace ppt_replay_gui {
         private UTIL util = new UTIL();
 
         //Data.bin class
-        private PPT.data_bin_ppt1 DATA = new PPT.data_bin_ppt1();
+        private PPT.data_bin DATA = new PPT.data_bin_ppt1_pc();
 
         //Oh and let's just make it global. Yeah?
         public int selected_id;
