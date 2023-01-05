@@ -18,12 +18,13 @@ using System.Windows.Forms;
 
 namespace ppt_replay_gui {
     public class PPT {
-        public class data_bin {
+        public abstract class data_bin
+        {
             //A few things we need to make clear first...
-            public const uint PREP_LOC = 0x2970;
-            public const uint DATA_LOC = 0x21F50;
-            public const uint PREP_LEN = 0x168;
-            public const uint DATA_LEN = 0x16940;
+            public uint PREP_LOC;
+            public uint DATA_LOC;
+            public uint PREP_LEN;
+            public uint DATA_LEN;
 
             //Lookup table for where PREP/DATA addresses are
             public static uint[] PREP_ADDR;
@@ -33,7 +34,42 @@ namespace ppt_replay_gui {
             public uint replay_count;
             public byte[] bytes;
 
-            public data_bin() {
+            //IO
+            public abstract void open(string fp);
+            public abstract void open();
+
+            //Time
+            public abstract uint get_year(uint id);
+            public abstract uint get_month(uint id);
+            public abstract uint get_day(uint id);
+            public abstract uint get_hour(uint id);
+            public abstract uint get_minute(uint id);
+            public abstract string time_format(uint id);
+
+            //Player Data
+            public abstract uint get_player_count(uint id);
+            public abstract string get_player_name(uint id, uint player);
+
+            //Duration Data
+            public abstract ushort get_length_as_seconds(uint id);
+            public abstract string get_length_as_string(uint id);
+
+            //Other things
+            public abstract void fill_tree(TreeView tv);
+            public abstract byte[] generate_dem(uint id);
+            public abstract void import_dem(byte[] dem, uint id);
+            public abstract string generate_hexdump(uint offset, uint len);
+            public abstract void erase(uint id);
+        }
+
+        public class data_bin_ppt1 : data_bin {
+
+            public data_bin_ppt1() {
+                PREP_LOC = 0x2970;
+                DATA_LOC = 0x21F50;
+                PREP_LEN = 0x168;
+                DATA_LEN = 0x16940;
+
                 path = "";
                 replay_count = 0;
 
@@ -48,12 +84,12 @@ namespace ppt_replay_gui {
                 }
             }
 
-            public void open(string fp) {
+            public override void open(string fp) {
                 path = fp;
                 open();
             }
 
-            public void open() {
+            public override void open() {
                 //Read in all bytes into "bytes"
                 bytes = File.ReadAllBytes(path);
 
@@ -79,31 +115,31 @@ namespace ppt_replay_gui {
              */
 
             //Time
-            public uint get_year(uint id) {
+            public override uint get_year(uint id) {
                 return (uint)2000 + BitConverter.ToUInt16(
                     bytes,
                     (int)PREP_ADDR[id] + 0x28
                 );
             }
 
-            public uint get_month(uint id) {
+            public override uint get_month(uint id) {
                 return bytes[PREP_ADDR[id] + 0x2A];
             }
 
-            public uint get_day(uint id) {
+            public override uint get_day(uint id) {
                 return bytes[PREP_ADDR[id] + 0x2B];
             }
 
-            public uint get_hour(uint id) {
+            public override uint get_hour(uint id) {
                 return bytes[PREP_ADDR[id] + 0x2C];
             }
 
-            public uint get_minute(uint id) {
+            public override uint get_minute(uint id) {
                 return bytes[PREP_ADDR[id] + 0x2D];
             }
 
             //Time Format String
-            public string time_format(uint id) {
+            public override string time_format(uint id) {
                 return string.Format(
                     "{0:D4}{1:D2}{2:D2}_{3:D2}{4:D2}",
                     get_year(id),
@@ -115,11 +151,11 @@ namespace ppt_replay_gui {
             }
 
             //Player Data
-            public uint get_player_count(uint id) {
+            public override uint get_player_count(uint id) {
                 return bytes[PREP_ADDR[id] + 0x07];
             }
 
-            public string get_player_name(uint id, uint player) {
+            public override string get_player_name(uint id, uint player) {
                 uint offset = PREP_ADDR[id] + 0x30 + (0x3C * player);
                 string ret = "";
 
@@ -135,14 +171,14 @@ namespace ppt_replay_gui {
             }
 
             //Duration Data
-            public ushort get_length_as_seconds(uint id) {
+            public override ushort get_length_as_seconds(uint id) {
                 return (ushort)BitConverter.ToUInt16(
                     bytes,
                     (int)PREP_ADDR[id] + 0x18
                 );
             }
 
-            public string get_length_as_string(uint id) {
+            public override string get_length_as_string(uint id) {
                 ushort duration = get_length_as_seconds(id);
                 int min, sec;
 
@@ -161,7 +197,7 @@ namespace ppt_replay_gui {
              * replay, if possible.
              */
 
-            public void fill_tree(TreeView tv) {
+            public override void fill_tree(TreeView tv) {
                 //Clear out TreeView...
                 tv.Nodes.Clear();
 
@@ -184,7 +220,7 @@ namespace ppt_replay_gui {
              * sections together.
              */
 
-            public byte[] generate_dem(uint id) {
+            public override byte[] generate_dem(uint id) {
                 byte[] dem_buffer = new byte[PREP_LEN + DATA_LEN];
                 Buffer.BlockCopy(bytes, (int)PREP_ADDR[id], dem_buffer, 0x00, (int)PREP_LEN);
                 Buffer.BlockCopy(bytes, (int)DATA_ADDR[id], dem_buffer, (int)PREP_LEN, (int)DATA_LEN);
@@ -201,7 +237,7 @@ namespace ppt_replay_gui {
              * than exporting it.
              */
 
-            public void import_dem(byte[] dem, uint id) {
+            public override void import_dem(byte[] dem, uint id) {
                 Buffer.BlockCopy(dem, 0x00, bytes, (int)PREP_ADDR[id], (int)PREP_LEN);
                 Buffer.BlockCopy(dem, (int)PREP_LEN, bytes, (int)DATA_ADDR[id], (int)DATA_LEN);
             }
@@ -215,7 +251,7 @@ namespace ppt_replay_gui {
              * information for the end user to see.
              */
 
-            public string generate_hexdump(uint offset, uint len) {
+            public override string generate_hexdump(uint offset, uint len) {
                 string hexdump;
                 uint shift, rows, addr, target;
 
@@ -270,7 +306,7 @@ namespace ppt_replay_gui {
              * replays up by 1.
              */
 
-            public void erase(uint id) {
+            public override void erase(uint id) {
                 //Copy blocks of data over
                 if (id != 49) {
                     Buffer.BlockCopy(

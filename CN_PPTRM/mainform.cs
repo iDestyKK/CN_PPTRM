@@ -30,7 +30,7 @@ namespace ppt_replay_gui {
         private UTIL util = new UTIL();
 
         //Data.bin class
-        private PPT.data_bin DATA = new PPT.data_bin();
+        private PPT.data_bin_ppt1 DATA = new PPT.data_bin_ppt1();
 
         //Oh and let's just make it global. Yeah?
         public int selected_id;
@@ -102,7 +102,7 @@ namespace ppt_replay_gui {
                     //Generate and dump hex values
                     textBox_prepDump.Text = DATA.generate_hexdump(
                         PPT.data_bin.PREP_ADDR[id],
-                        PPT.data_bin.PREP_LEN
+                        DATA.PREP_LEN
                     );
                 }
                 else {
@@ -230,14 +230,14 @@ namespace ppt_replay_gui {
 
             Array.Clear(
                 DATA.bytes,
-                (int) PPT.data_bin.PREP_LOC,
-                (int) PPT.data_bin.PREP_LEN * 50
+                (int) DATA.PREP_LOC,
+                (int) DATA.PREP_LEN * 50
             );
 
             Array.Clear(
                 DATA.bytes,
-                (int) PPT.data_bin.DATA_LOC,
-                (int) PPT.data_bin.DATA_LEN * 50
+                (int) DATA.DATA_LOC,
+                (int) DATA.DATA_LEN * 50
             );
 
             DATA.replay_count = 0;
