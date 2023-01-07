@@ -1,6 +1,6 @@
 # CN\_PPTRM
 
-### Version 0.4.0 (Last Updated: 2023/01/07)
+### Version 0.4.1 (Last Updated: 2023/01/07)
 
 ## About
 CN\_PPTRM (Clara Nguyen's Puyo Puyo Tetris Replay Manager) is a tool which let

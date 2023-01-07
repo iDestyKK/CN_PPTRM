@@ -123,7 +123,10 @@
 If there's a problem, contact me at my Twitter (@iDestyKK) or on my GitHub (iDestyKK). I'm always glad to make improvements if needed. :)</value>
   </data>
   <data name="richTextBox1.Text" xml:space="preserve">
-    <value>0.4.0 (2023/01/07)
+    <value>0.4.1 (2023/01/07)
+ - Fixed a bug where gaps in data.bin caused not all replays to show
+
+0.4.0 (2023/01/07)
  - Puyo Puyo Tetris 2 (PC) support
  - New DEM file format to support both PPT and PPT2
  - Game/Platform specification to prevent wrong game/replay insertion
