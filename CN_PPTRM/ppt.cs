@@ -44,6 +44,10 @@ namespace ppt_replay_gui {
             public uint replay_count;
             public byte[] bytes;
 
+            // Defined game and platform variables for checking
+            public game_t game_val;
+            public platform_t platform_val;
+
             // IO
             public abstract void open(string fp);
             public abstract void open();
@@ -216,6 +220,10 @@ namespace ppt_replay_gui {
         public class data_bin_ppt1_pc : data_bin {
 
             public data_bin_ppt1_pc() {
+                // This class is strictly for PPT1 (PC Version)
+                game_val     = PPT.game_t.PPT1;
+                platform_val = PPT.platform_t.PC;
+
                 // Addresses specific to Puyo Puyo Tetris 1 PC version "data.bin"
                 PREP_LOC = 0x2970;
                 DATA_LOC = 0x21F50;
@@ -344,6 +352,10 @@ namespace ppt_replay_gui {
         public class data_bin_ppt2_pc : data_bin {
 
             public data_bin_ppt2_pc() {
+                // This class is strictly for PPT2 (PC Version)
+                game_val     = PPT.game_t.PPT2;
+                platform_val = PPT.platform_t.PC;
+
                 // Addresses specific to Puyo Puyo Tetris 2 PC version "data.bin"
                 PREP_LOC = 0x6E1BC;
                 DATA_LOC = 0x9C08C;
