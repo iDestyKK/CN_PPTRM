@@ -336,11 +336,9 @@ namespace ppt_replay_gui {
             }
         }
 
-        public class data_bin_ppt2_pc : data_bin
-        {
+        public class data_bin_ppt2_pc : data_bin {
 
-            public data_bin_ppt2_pc()
-            {
+            public data_bin_ppt2_pc() {
                 //Addresses specific to Puyo Puyo Tetris 2 PC version "data.bin"
                 PREP_LOC = 0x6E1BC;
                 DATA_LOC = 0x9C08C;
@@ -355,29 +353,25 @@ namespace ppt_replay_gui {
                 DATA_ADDR = new uint[50];
 
                 //Setup lookup "table" with addresses.
-                for (uint i = 0; i < 50; i++)
-                {
+                for (uint i = 0; i < 50; i++) {
                     PREP_ADDR[i] = PREP_LOC + (PREP_LEN * i);
                     DATA_ADDR[i] = DATA_LOC + (DATA_LEN * i);
                 }
             }
 
-            public override void open(string fp)
-            {
+            public override void open(string fp) {
                 path = fp;
                 open();
             }
 
-            public override void open()
-            {
+            public override void open() {
                 //Read in all bytes into "bytes"
                 bytes = File.ReadAllBytes(path);
 
                 //Figure out the number of replays in the save
                 int v;
 
-                for (replay_count = 0; replay_count < 50; replay_count++)
-                {
+                for (replay_count = 0; replay_count < 50; replay_count++) {
                     v = BitConverter.ToInt32(
                         bytes,
                         (int)PREP_ADDR[replay_count]
@@ -396,16 +390,14 @@ namespace ppt_replay_gui {
              */
 
             //Time
-            public override uint get_year(uint id)
-            {
+            public override uint get_year(uint id) {
                 return (uint)2000 + BitConverter.ToUInt16(
                     bytes,
                     (int)PREP_ADDR[id] + 0x20
                 );
             }
 
-            public override uint get_month(uint id)
-            {
+            public override uint get_month(uint id) {
                 return bytes[PREP_ADDR[id] + 0x22];
             }
 

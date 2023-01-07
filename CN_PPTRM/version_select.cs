@@ -10,8 +10,7 @@ using System.Windows.Forms;
 
 namespace ppt_replay_gui
 {
-    public partial class version_select : Form
-    {
+    public partial class version_select : Form {
 
         public enum game_t {
             NONE = -1,

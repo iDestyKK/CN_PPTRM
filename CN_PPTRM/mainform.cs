@@ -55,11 +55,9 @@ namespace ppt_replay_gui {
                 version_select vsel = new version_select();
                 vsel.ShowDialog();
 
-                if (vsel.bttn_val == DialogResult.OK)
-                {
+                if (vsel.bttn_val == DialogResult.OK) {
                     //Recreate "DATA" based on game
-                    switch (vsel.game_val)
-                    {
+                    switch (vsel.game_val) {
                         case version_select.game_t.PPT1:
                             DATA = new PPT.data_bin_ppt1_pc();
                             break;
