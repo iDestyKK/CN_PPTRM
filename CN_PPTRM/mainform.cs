@@ -49,17 +49,44 @@ namespace ppt_replay_gui {
         }
 
         private void ImportSaveToolStripMenuItem_Click(object sender, EventArgs e) {
+            // First, get the save file
             if (openFileDialog_data.ShowDialog() == DialogResult.OK) {
-                DATA.path = openFileDialog_data.FileName;
+                // Then let's see what save it is (User Input)
+                version_select vsel = new version_select();
+                vsel.ShowDialog();
 
-                //Adjust the form's name
-                this.Text = wintitle + " (" + DATA.path + ")";
+                if (vsel.bttn_val == DialogResult.OK)
+                {
+                    //Recreate "DATA" based on game
+                    switch (vsel.game_val)
+                    {
+                        case version_select.game_t.PPT1:
+                            DATA = new PPT.data_bin_ppt1_pc();
+                            break;
+                        case version_select.game_t.PPT2:
+                            DATA = new PPT.data_bin_ppt2_pc();
+                            break;
+                        default:
+                            MessageBox.Show(
+                                "Invalid Game/Platform selection. Please try again.",
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error
+                            );
+                            break;
+                    }
 
-                //Process the save data
-                DATA.open();
-                DATA.fill_tree(treeView_replays);
+                    DATA.path = openFileDialog_data.FileName;
 
-                //tab_replay_control.Visible = true;
+                    //Adjust the form's name
+                    this.Text = wintitle + " (" + DATA.path + ")";
+
+                    //Process the save data
+                    DATA.open();
+                    DATA.fill_tree(treeView_replays);
+
+                    //tab_replay_control.Visible = true;
+                }
             }
         }
 
