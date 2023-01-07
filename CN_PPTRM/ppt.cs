@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Linq.Expressions;
 
 namespace ppt_replay_gui {
     public class PPT {
@@ -311,17 +312,84 @@ namespace ppt_replay_gui {
                 // Read in all bytes into "bytes"
                 bytes = File.ReadAllBytes(path);
 
-                // Figure out the number of replays in the save
-                int v;
+                /*
+                 * Figure out how many replays are in the save, no matter what
+                 * it takes
+                 */
 
-                for (replay_count = 0; replay_count < 50; replay_count++) {
+                int v, i, j, k, cut_i;
+                bool[] replay_list = new bool[50];
+
+                for (i = 0, replay_count = 0; i < 50; i++) {
                     v = BitConverter.ToInt32(
                         bytes,
-                        (int)PREP_ADDR[replay_count]
+                        (int)PREP_ADDR[i]
                     );
 
-                    if (v != 0x50455250)
+                    if (v == 0x50455250)
+                        replay_count++;
+
+                    replay_list[i] = (v == 0x50455250);
+                }
+
+                // Remove "gaps"
+                for (i = 0; i < 50; i++) {
+                    // Omit if not valid
+                    if (replay_list[i] == true)
+                        continue;
+
+                    // Assume there's a gap. Thus, go up to the next replay
+                    // that isn't blank.
+                    for (j = i, k = i + 1; k < 50; k++)
+                        if (replay_list[k] == true)
+                            break;
+
+                    // Quit if out of bounds
+                    if (k >= 50)
                         break;
+
+                    // Prepare trimming off at end
+                    cut_i = k - i;
+                    byte[] zero_prep = new byte[(int)PREP_LEN * cut_i];
+                    byte[] zero_data = new byte[(int)DATA_LEN * cut_i];
+
+                    /*
+                     * Copy over all data in PREP and DATA sections,
+                     * essentially a memmove. Since C# doesn't have a memmove
+                     * (I think), do it the horrible way.
+                     */
+
+                    for (; j < 50 && k < 50; j++, k++) {
+                        Buffer.BlockCopy(
+                            bytes, (int)PREP_ADDR[k],
+                            bytes, (int)PREP_ADDR[j],
+                            (int)PREP_LEN
+                        );
+
+                        Buffer.BlockCopy(
+                            bytes, (int)DATA_ADDR[k],
+                            bytes, (int)DATA_ADDR[j],
+                            (int)DATA_LEN
+                        );
+
+                        replay_list[j] = replay_list[k];
+                    }
+
+                    // Wipe out the end since it's been copied over
+                    Buffer.BlockCopy(
+                        zero_prep, 0,
+                        bytes, (int)PREP_ADDR[50 - cut_i],
+                        (int)PREP_LEN * cut_i
+                    );
+
+                    Buffer.BlockCopy(
+                        zero_data, 0,
+                        bytes, (int)DATA_ADDR[50 - cut_i],
+                        (int)DATA_LEN * cut_i
+                    );
+
+                    for (k = 50 - cut_i; k < 50; k++)
+                        replay_list[k] = false;
                 }
             }
 
@@ -443,17 +511,84 @@ namespace ppt_replay_gui {
                 // Read in all bytes into "bytes"
                 bytes = File.ReadAllBytes(path);
 
-                // Figure out the number of replays in the save
-                int v;
+                /*
+                 * Figure out how many replays are in the save, no matter what
+                 * it takes
+                 */
 
-                for (replay_count = 0; replay_count < 50; replay_count++) {
+                int v, i, j, k, cut_i;
+                bool[] replay_list = new bool[50];
+
+                for (i = 0, replay_count = 0; i < 50; i++) {
                     v = BitConverter.ToInt32(
                         bytes,
-                        (int)PREP_ADDR[replay_count]
+                        (int)PREP_ADDR[i]
                     );
 
-                    if (v != 0x50455250)
+                    if (v == 0x50455250)
+                        replay_count++;
+
+                    replay_list[i] = (v == 0x50455250);
+                }
+
+                // Remove "gaps"
+                for (i = 0; i < 50; i++) {
+                    // Omit if not valid
+                    if (replay_list[i] == true)
+                        continue;
+
+                    // Assume there's a gap. Thus, go up to the next replay
+                    // that isn't blank.
+                    for (j = i,  k = i + 1; k < 50; k++)
+                        if (replay_list[k] == true)
+                            break;
+
+                    // Quit if out of bounds
+                    if (k >= 50)
                         break;
+
+                    // Prepare trimming off at end
+                    cut_i = k - i;
+                    byte[] zero_prep = new byte[(int)PREP_LEN * cut_i];
+                    byte[] zero_data = new byte[(int)DATA_LEN * cut_i];
+
+                    /*
+                     * Copy over all data in PREP and DATA sections,
+                     * essentially a memmove. Since C# doesn't have a memmove
+                     * (I think), do it the horrible way.
+                     */
+
+                    for (; j < 50 && k < 50; j++, k++) {
+                        Buffer.BlockCopy(
+                            bytes, (int)PREP_ADDR[k],
+                            bytes, (int)PREP_ADDR[j],
+                            (int)PREP_LEN
+                        );
+
+                        Buffer.BlockCopy(
+                            bytes, (int)DATA_ADDR[k],
+                            bytes, (int)DATA_ADDR[j],
+                            (int)DATA_LEN
+                        );
+
+                        replay_list[j] = replay_list[k];
+                    }
+
+                    // Wipe out the end since it's been copied over
+                    Buffer.BlockCopy(
+                        zero_prep, 0,
+                        bytes, (int)PREP_ADDR[50 - cut_i],
+                        (int)PREP_LEN * cut_i
+                    );
+
+                    Buffer.BlockCopy(
+                        zero_data, 0,
+                        bytes, (int)DATA_ADDR[50 - cut_i],
+                        (int)DATA_LEN * cut_i
+                    );
+
+                    for (k = 50 - cut_i; k < 50; k++)
+                        replay_list[k] = false;
                 }
             }
 
