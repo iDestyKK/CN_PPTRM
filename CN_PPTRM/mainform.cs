@@ -32,6 +32,9 @@ namespace ppt_replay_gui {
         // Data.bin class
         private PPT.data_bin DATA = new PPT.data_bin_ppt1_pc();
 
+        // Also a PPT class, think of it as util
+        private PPT ppt = new PPT();
+
         // Oh and let's just make it global. Yeah?
         public int selected_id;
 
@@ -157,11 +160,160 @@ namespace ppt_replay_gui {
             }
         }
 
+        public byte[] open_dem_file(string fpath) {
+            byte[] buffer;
+            PPT.game_t game_val;
+            PPT.platform_t platform_val;
+            uint version;
+
+            // Check header. This is 16 bytes
+            byte[] header_test = new byte[16];
+
+            using (BinaryReader br = new BinaryReader(new FileStream(fpath, FileMode.Open))) {
+                br.BaseStream.Seek(0, SeekOrigin.Begin);
+                br.Read(header_test, 0, 16);
+
+                // Check if legacy. If so, DATA's PPT type MUST be PPT1/PC
+                if (BitConverter.ToUInt16(header_test, 0) == 0x8B1F) {
+                    // Header tells it's a legacy file w/ 0x1F 0x8B.
+                    if (
+                        DATA.game_val == PPT.game_t.PPT1 &&
+                        DATA.platform_val == PPT.platform_t.PC
+                    ) {
+                        // It's PPT1/PC. Perform the read of entire file
+                        br.BaseStream.Seek(0, SeekOrigin.Begin);
+
+                        buffer = new byte[br.BaseStream.Length];
+                        br.Read(buffer, 0, (int)br.BaseStream.Length);
+
+                        // Decompress via GZip
+                        return util.gz_decompress(buffer);
+                    }
+
+                    // It's not PPT1/PC. Report an error and back out.
+                    MessageBox.Show(
+                        "You have selected a legacy replay from an " +
+                        "older version of CN_PPTRM. It can only be " +
+                        "imported into the PC version of Puyo Puyo " +
+                        "Tetris.",
+
+                        "Failed to load replay - " +
+                        "Legacy PPT Replay Error",
+
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+
+                    return null;
+                }
+                else
+                // Check if legacy uncompressed. If so, same applies
+                if (BitConverter.ToUInt32(header_test, 0) == 0x50455250) {
+                    // Header tells it's a legacy file w/ PREP.
+                    if (
+                        DATA.game_val == PPT.game_t.PPT1 &&
+                        DATA.platform_val == PPT.platform_t.PC
+                    ) {
+                        // It's PPT1/PC. Perform the read of entire file
+                        br.BaseStream.Seek(0, SeekOrigin.Begin);
+
+                        buffer = new byte[br.BaseStream.Length];
+                        br.Read(buffer, 0, (int)br.BaseStream.Length);
+
+                        // Decompress via GZip
+                        return buffer;
+                    }
+
+                    // It's not PPT1/PC. Report an error and back out.
+                    MessageBox.Show(
+                        "You have selected a legacy replay from an " +
+                        "older version of CN_PPTRM. It can only be " +
+                        "imported into the PC version of Puyo Puyo " +
+                        "Tetris.",
+
+                        "Failed to load replay - " +
+                        "Legacy PPT Replay Error",
+
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+
+                    return null;
+                }
+                else
+                // Check if new format. If so, we'll know what to do.
+                if (BitConverter.ToUInt32(header_test, 0) == 0x314D4544) {
+                    // Extract game, platform, and version
+                    game_val = (PPT.game_t)
+                        BitConverter.ToInt32(header_test, 4);
+
+                    platform_val = (PPT.platform_t)
+                        BitConverter.ToInt32(header_test, 8);
+
+                    version = (uint)
+                        BitConverter.ToUInt32(header_test, 12);
+
+                    // Compare with DATA (let's ignore "version" for now)
+                    if (
+                        game_val != DATA.game_val ||
+                        platform_val != DATA.platform_val
+                    ) {
+                        // Check failed. Print out a detailed error message.
+                        MessageBox.Show(
+                            "You have attempted to read in a replay from " +
+                            ppt.generate_game_name(game_val, platform_val) +
+                            ". Please load in a replay file for " +
+                            ppt.generate_game_name(
+                                DATA.game_val, DATA.platform_val
+                            ) +
+                            " to insert into the save.",
+                            "Failed to load replay - Wrong Game",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error
+                        );
+
+                        return null;
+                    }
+
+                    // Assume it's a valid save. Skip the first 16 bytes and
+                    // read in the rest of the file. Then decompress it.
+                    br.BaseStream.Seek(16, SeekOrigin.Begin);
+
+                    buffer = new byte[br.BaseStream.Length - 16];
+                    br.Read(buffer, 0, (int)(br.BaseStream.Length - 16));
+
+                    // Decompress via GZip
+                    return util.gz_decompress(buffer);
+                }
+                else {
+                    // Invalid Replay Format
+                    MessageBox.Show(
+                        "Invalid Replay File. Header Mismatch.",
+                        "Failed to load replay - Invalid",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error
+                    );
+
+                    return null;
+                }
+            }
+
+            return null;
+        }
+
         private void Button_import_replay_Click(object sender, EventArgs e) {
             if (openFileDialog_dem.ShowDialog() == DialogResult.OK) {
                 // TODO: Make replay comparison box. For now, we'll just ask if
                 // the user is sure they want to carry on with replacing it.
                 // Are you sure you want to do this?
+
+                // Perform replay validity check before doing something stupid
+                byte[] buffer = open_dem_file(openFileDialog_dem.FileName);
+
+                // If "open_dem_file" failed, don't do anything
+                if (buffer == null)
+                    return;
+
                 DialogResult confirm = MessageBox.Show(
                     "Are you sure you want to overwrite this replay?",
                     "Confirm Replacement",
@@ -173,9 +325,6 @@ namespace ppt_replay_gui {
                 if (confirm != DialogResult.Yes)
                     return;
 
-                byte[] buffer = util.gz_decompress(
-                    File.ReadAllBytes(openFileDialog_dem.FileName)
-                );
                 DATA.import_dem(buffer, Convert.ToUInt32(label_id.Text));
                 DATA.fill_tree(treeView_replays);
 
@@ -223,10 +372,13 @@ namespace ppt_replay_gui {
 
             // Okay... let's just assume we can import then (probably a really bad idea)
             if (openFileDialog_dem.ShowDialog() == DialogResult.OK) {
+                byte[] buffer = open_dem_file(openFileDialog_dem.FileName);
 
-                byte[] buffer = util.gz_decompress(
-                    File.ReadAllBytes(openFileDialog_dem.FileName)
-                );
+                // If "open_dem_file" failed, don't do anything
+                if (buffer == null)
+                    return;
+
+                //byte[] buffer = util.gz_decompress(fbytes);
                 DATA.import_dem(buffer, DATA.replay_count);
 
                 DATA.replay_count++;

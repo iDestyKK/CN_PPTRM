@@ -29,6 +29,72 @@ namespace ppt_replay_gui {
             PC = 0
         }
 
+        /*
+         * generate_dem_header
+         * 
+         * Generate a header for binary files, or for comparison purposes. This
+         * serves as the first 16 bytes in a new DEM file. Older DEM files will
+         * start with 0x1F 0x8B, being GZip's magic number.
+         */
+
+        public byte[] generate_dem_header(game_t game, platform_t platform, uint version = 0) {
+            byte[] data = new byte[16];
+            byte[] bytes_game, bytes_platform, bytes_version;
+            int i, j;
+            const string header_start = "DEM1";
+
+            // Write the string
+            for (i = 0; i < 4; i++)
+                data[i] = (byte) header_start[i];
+
+            // Convert the three integers to bytes and write them
+            bytes_game     = BitConverter.GetBytes(( int) game    );
+            bytes_platform = BitConverter.GetBytes(( int) platform);
+            bytes_version  = BitConverter.GetBytes((uint) version );
+
+            // This could probably be written better...
+            for (j = 0; j < 4; i++, j++) data[i] = bytes_game    [j];
+            for (j = 0; j < 4; i++, j++) data[i] = bytes_platform[j];
+            for (j = 0; j < 4; i++, j++) data[i] = bytes_version [j];
+
+            string tmp = "{";
+            foreach (byte b in data) {
+                tmp += b.ToString("X2") + ", ";
+            }
+            tmp += "}";
+
+            MessageBox.Show("DATA: " + tmp);
+
+            return data;
+        }
+
+        public string generate_game_name(game_t game, platform_t platform) {
+            string name = "";
+
+            switch (game) {
+                case game_t.PPT1:
+                    name += "Puyo Puyo Tetris";
+                    break;
+                case game_t.PPT2:
+                    name += "Puyo Puyo Tetris 2";
+                    break;
+                default:
+                    name += "Unknown Game";
+                    break;
+            }
+
+            switch (platform) {
+                case platform_t.PC:
+                    name += " (PC)";
+                    break;
+                default:
+                    name += " (?)";
+                    break;
+            }
+
+            return name;
+        }
+
         public abstract class data_bin {
             // A few things we need to make clear first...
             public uint PREP_LOC;
