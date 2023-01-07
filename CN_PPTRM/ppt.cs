@@ -57,14 +57,6 @@ namespace ppt_replay_gui {
             for (j = 0; j < 4; i++, j++) data[i] = bytes_platform[j];
             for (j = 0; j < 4; i++, j++) data[i] = bytes_version [j];
 
-            string tmp = "{";
-            foreach (byte b in data) {
-                tmp += b.ToString("X2") + ", ";
-            }
-            tmp += "}";
-
-            MessageBox.Show("DATA: " + tmp);
-
             return data;
         }
 
