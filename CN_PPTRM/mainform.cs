@@ -148,10 +148,19 @@ namespace ppt_replay_gui {
             if (saveFileDialog_dem.ShowDialog() == DialogResult.OK) {
                 string path = saveFileDialog_dem.FileName;
 
-                // Read the data and extract it accordingly.
-                byte[] buffer = util.gz_compress(
+                // Generate both file segments
+                byte[] header = ppt.generate_dem_header(
+                    DATA.game_val, DATA.platform_val
+                );
+
+                byte[] data = util.gz_compress(
                     DATA.generate_dem(Convert.ToUInt32(label_id.Text))
                 );
+
+                // Create final file based on both segments
+                byte[] buffer = new byte[header.Length + data.Length];
+                header.CopyTo(buffer, 0);
+                data.CopyTo(buffer, header.Length);
 
                 // File.WriteAllBytes(path, buffer);
                 File.WriteAllBytes(path, buffer);
@@ -348,12 +357,23 @@ namespace ppt_replay_gui {
 
             if (folderBrowserDialog_exportAll.ShowDialog() == DialogResult.OK) {
                 for (uint i = 0; i < DATA.replay_count; i++) {
-                    byte[] buffer = util.gz_compress(
+                    // Generate both file segments
+                    byte[] header = ppt.generate_dem_header(
+                        DATA.game_val, DATA.platform_val
+                    );
+
+                    byte[] data = util.gz_compress(
                         DATA.generate_dem(i)
                     );
 
+                    // Create final file based on both segments
+                    byte[] buffer = new byte[header.Length + data.Length];
+                    header.CopyTo(buffer, 0);
+                    data.CopyTo(buffer, header.Length);
+
                     File.WriteAllBytes(
-                        folderBrowserDialog_exportAll.SelectedPath + "\\" + DATA.time_format(i) + ".dem",
+                        folderBrowserDialog_exportAll.SelectedPath + "\\" +
+                        DATA.time_format(i) + ".dem",
                         buffer
                     );
                 }
