@@ -18,6 +18,17 @@ using System.Windows.Forms;
 
 namespace ppt_replay_gui {
     public class PPT {
+        public enum game_t {
+            NONE = -1,
+            PPT1 = 0,
+            PPT2 = 1
+        }
+
+        public enum platform_t {
+            NONE = -1,
+            PC = 0
+        }
+
         public abstract class data_bin {
             // A few things we need to make clear first...
             public uint PREP_LOC;

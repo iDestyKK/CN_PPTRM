@@ -58,10 +58,10 @@ namespace ppt_replay_gui {
                 if (vsel.bttn_val == DialogResult.OK) {
                     // Recreate "DATA" based on game
                     switch (vsel.game_val) {
-                        case version_select.game_t.PPT1:
+                        case PPT.game_t.PPT1:
                             DATA = new PPT.data_bin_ppt1_pc();
                             break;
-                        case version_select.game_t.PPT2:
+                        case PPT.game_t.PPT2:
                             DATA = new PPT.data_bin_ppt2_pc();
                             break;
                         default:
