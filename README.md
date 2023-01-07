@@ -1,19 +1,23 @@
 # CN\_PPTRM
 
-### Version 0.3.0 (Last Updated: 2019/09/20)
+### Version 0.4.0 (Last Updated: 2023/01/07)
 
 ## About
 CN\_PPTRM (Clara Nguyen's Puyo Puyo Tetris Replay Manager) is a tool which let
-users manage their replays outside of Puyo Puyo Tetris. They are free to
-export their replays to separate files, or import them back into the save to
-replay at any given time. The entire purpose of this tool is to get past the
-annoying 50 replay limit that the game gives PC players. In addition, players
-can share their replays by uploading them if they wish. Replays are stored in
-the `data.bin` file.
+users manage their replays outside of Puyo Puyo Tetris and Puyo Puyo Tetris 2.
+They are free to export their replays to separate files, or import them back
+into the save to replay at any given time. The entire purpose of this tool is
+to get past the annoying 50 replay limit that the game gives PC players. In
+addition, players can share their replays by uploading them if they wish.
+Replays are stored in the `data.bin` file.
 
 This is based off of my [ppt\_replay\_tools](https://github.com/iDestyKK/ppt_replay_tools),
 which I also wrote to manage replays in this game. I just wanted a nice GUI to
 do the job just as well (and be a bit more convenient).
+
+## Supported Games
+* Puyo Puyo Tetris (PC)
+* Puyo Puyo Tetris 2 (PC)
 
 ## Preview
 <p align = "center">

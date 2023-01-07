@@ -117,27 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="label1.Text" xml:space="preserve">
-    <value>CN_PPTRM (Clara Nguyen's Puyo Puyo Tetris Replay Manager) is a tool which lets you manage replays in Puyo Puyo Tetris. This indirectly removes the 50 replay limit by letting you export and import them from the save as you wish.
-
-If there's a problem, contact me at my Twitter (@iDestyKK) or on my GitHub (iDestyKK). I'm always glad to make improvements if needed. :)</value>
-  </data>
-  <data name="richTextBox1.Text" xml:space="preserve">
-    <value>0.4.0 (2023/01/07)
- - Puyo Puyo Tetris 2 (PC) support
- - New DEM file format to support both PPT and PPT2
- - Game/Platform specification to prevent wrong game/replay insertion
- - Old Legacy replays will continue to work with (and only with) PPT (PC)
-
-0.3.0 (2019/09/20)
- - Added confirmation for all actions that relate to insert/replace/deletion of replay data.
- - Slight GUI tweaks
- - Code Reorganisation
-
-0.2.0 (2019/09/02)
- - Added GZip Compression. All new DEM files will be compressed by default. The program can still import uncompressed ones.
-
-0.1.0 (2019/09/02)
- - Initial Release</value>
-  </data>
 </root>
