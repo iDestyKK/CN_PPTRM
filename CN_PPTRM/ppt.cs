@@ -22,7 +22,8 @@ namespace ppt_replay_gui {
         public enum game_t {
             NONE = -1,
             PPT1 = 0,
-            PPT2 = 1
+            PPT2 = 1,
+            PPES = 2
         }
 
         public enum platform_t {
@@ -70,6 +71,9 @@ namespace ppt_replay_gui {
                     break;
                 case game_t.PPT2:
                     name += "Puyo Puyo Tetris 2";
+                    break;
+                case game_t.PPES:
+                    name += "Puyo Puyo Champions";
                     break;
                 default:
                     name += "Unknown Game";
@@ -540,6 +544,205 @@ namespace ppt_replay_gui {
                     // Assume there's a gap. Thus, go up to the next replay
                     // that isn't blank.
                     for (j = i,  k = i + 1; k < 50; k++)
+                        if (replay_list[k] == true)
+                            break;
+
+                    // Quit if out of bounds
+                    if (k >= 50)
+                        break;
+
+                    // Prepare trimming off at end
+                    cut_i = k - i;
+                    byte[] zero_prep = new byte[(int)PREP_LEN * cut_i];
+                    byte[] zero_data = new byte[(int)DATA_LEN * cut_i];
+
+                    /*
+                     * Copy over all data in PREP and DATA sections,
+                     * essentially a memmove. Since C# doesn't have a memmove
+                     * (I think), do it the horrible way.
+                     */
+
+                    for (; j < 50 && k < 50; j++, k++) {
+                        Buffer.BlockCopy(
+                            bytes, (int)PREP_ADDR[k],
+                            bytes, (int)PREP_ADDR[j],
+                            (int)PREP_LEN
+                        );
+
+                        Buffer.BlockCopy(
+                            bytes, (int)DATA_ADDR[k],
+                            bytes, (int)DATA_ADDR[j],
+                            (int)DATA_LEN
+                        );
+
+                        replay_list[j] = replay_list[k];
+                    }
+
+                    // Wipe out the end since it's been copied over
+                    Buffer.BlockCopy(
+                        zero_prep, 0,
+                        bytes, (int)PREP_ADDR[50 - cut_i],
+                        (int)PREP_LEN * cut_i
+                    );
+
+                    Buffer.BlockCopy(
+                        zero_data, 0,
+                        bytes, (int)DATA_ADDR[50 - cut_i],
+                        (int)DATA_LEN * cut_i
+                    );
+
+                    for (k = 50 - cut_i; k < 50; k++)
+                        replay_list[k] = false;
+                }
+            }
+
+            /*
+             * Replay Get Information Functions
+             * 
+             * Simple utility functions for getting specific data about a
+             * replay. This is mainly for code readability.
+             */
+
+            // Time
+            public override uint get_year(uint id) {
+                return (uint)2000 + BitConverter.ToUInt16(
+                    bytes,
+                    (int)PREP_ADDR[id] + 0x20
+                );
+            }
+
+            public override uint get_month(uint id) {
+                return bytes[PREP_ADDR[id] + 0x22];
+            }
+
+            public override uint get_day(uint id) {
+                return bytes[PREP_ADDR[id] + 0x23];
+            }
+
+            public override uint get_hour(uint id) {
+                return bytes[PREP_ADDR[id] + 0x24];
+            }
+
+            public override uint get_minute(uint id) {
+                return bytes[PREP_ADDR[id] + 0x25];
+            }
+
+            // Time Format String
+            public override string time_format(uint id) {
+                return string.Format(
+                    "{0:D4}{1:D2}{2:D2}_{3:D2}{4:D2}",
+                    get_year(id),
+                    get_month(id),
+                    get_day(id),
+                    get_hour(id),
+                    get_minute(id)
+                );
+            }
+
+            // Player Data
+            public override uint get_player_count(uint id) {
+                return bytes[PREP_ADDR[id] + 0x07];
+            }
+
+            public override string get_player_name(uint id, uint player) {
+                uint offset = PREP_ADDR[id] + 0x28 + (0x40 * player);
+                string ret = "";
+
+                // Get string length first
+                int len;
+                for (len = 0; ; len += 2) {
+                    if (bytes[offset + len] == 0x00 && bytes[offset + len + 1] == 0x00)
+                        break;
+                }
+
+                // Extract UTF-16LE from byte array
+                return Encoding.Unicode.GetString(bytes, (int)offset, len);
+            }
+
+            // Duration Data
+            public override ushort get_length_as_seconds(uint id) {
+                return (ushort)BitConverter.ToUInt16(
+                    bytes,
+                    (int)PREP_ADDR[id] + 0x16
+                );
+            }
+
+            public override string get_length_as_string(uint id) {
+                ushort duration = get_length_as_seconds(id);
+                int min, sec;
+
+                min = duration / 60;
+                sec = duration % 60;
+
+                return min.ToString() + ":" + sec.ToString("00");
+            }
+        }
+
+        public class data_bin_ppes_pc : data_bin {
+
+            public data_bin_ppes_pc() {
+                // This class is strictly for PPES/PPC (PC Version)
+                game_val = PPT.game_t.PPES;
+                platform_val = PPT.platform_t.PC;
+
+                // Addresses specific to Puyo Puyo eSports version "data.bin"
+                PREP_LOC = 0x66978;
+                DATA_LOC = 0x86200;
+                PREP_LEN = 0x170;
+                DATA_LEN = 0x16900;
+
+                path = "";
+                replay_count = 0;
+
+                // Configure the address stuff
+                PREP_ADDR = new uint[50];
+                DATA_ADDR = new uint[50];
+
+                // Setup lookup "table" with addresses.
+                for (uint i = 0; i < 50; i++) {
+                    PREP_ADDR[i] = PREP_LOC + (PREP_LEN * i);
+                    DATA_ADDR[i] = DATA_LOC + (DATA_LEN * i);
+                }
+            }
+
+            public override void open(string fp) {
+                path = fp;
+                open();
+            }
+
+            public override void open() {
+                // Read in all bytes into "bytes"
+                bytes = File.ReadAllBytes(path);
+
+                /*
+                 * Figure out how many replays are in the save, no matter what
+                 * it takes
+                 */
+
+                int v, i, j, k, cut_i;
+                bool[] replay_list = new bool[50];
+
+                for (i = 0, replay_count = 0; i < 50; i++) {
+                    v = BitConverter.ToInt32(
+                        bytes,
+                        (int)PREP_ADDR[i]
+                    );
+
+                    if (v == 0x50455250)
+                        replay_count++;
+
+                    replay_list[i] = (v == 0x50455250);
+                }
+
+                // Remove "gaps"
+                for (i = 0; i < 50; i++) {
+                    // Omit if not valid
+                    if (replay_list[i] == true)
+                        continue;
+
+                    // Assume there's a gap. Thus, go up to the next replay
+                    // that isn't blank.
+                    for (j = i, k = i + 1; k < 50; k++)
                         if (replay_list[k] == true)
                             break;
 

@@ -63,7 +63,8 @@
             this.comboBox_game.FormattingEnabled = true;
             this.comboBox_game.Items.AddRange(new object[] {
             "Puyo Puyo Tetris",
-            "Puyo Puyo Tetris 2"});
+            "Puyo Puyo Tetris 2",
+            "Puyo Puyo Champions"});
             this.comboBox_game.Location = new System.Drawing.Point(54, 37);
             this.comboBox_game.Name = "comboBox_game";
             this.comboBox_game.Size = new System.Drawing.Size(244, 20);

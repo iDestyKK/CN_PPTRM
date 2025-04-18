@@ -67,6 +67,9 @@ namespace ppt_replay_gui {
                         case PPT.game_t.PPT2:
                             DATA = new PPT.data_bin_ppt2_pc();
                             break;
+                        case PPT.game_t.PPES:
+                            DATA = new PPT.data_bin_ppes_pc();
+                            break;
                         default:
                             MessageBox.Show(
                                 "Invalid Game/Platform selection. Please try again.",

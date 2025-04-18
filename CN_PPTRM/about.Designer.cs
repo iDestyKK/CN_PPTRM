@@ -96,7 +96,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(427, 53);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Version: 0.4.1\r\nLast Updated: 2023/01/07\r\n\r\nChangelog:";
+            this.label2.Text = "Version: 0.5.0\r\nLast Updated: 2025/04/18\r\n\r\nChangelog:";
             // 
             // about
             // 
