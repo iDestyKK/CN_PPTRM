@@ -123,7 +123,11 @@
 If there's a problem, contact me at my Twitter (@iDestyKK) or on my GitHub (iDestyKK). I'm always glad to make improvements if needed. :)</value>
   </data>
   <data name="richTextBox1.Text" xml:space="preserve">
-    <value>0.4.1 (2023/01/07)
+    <value>0.5.0 (2025/04/18)
+ - Puyo Puyo Champions (PC) support
+ - DEM format supports PPT, PPT2, and PPC (PPES).
+
+0.4.1 (2023/01/07)
  - Fixed a bug where gaps in data.bin caused not all replays to show
 
 0.4.0 (2023/01/07)
