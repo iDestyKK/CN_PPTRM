@@ -1,6 +1,6 @@
 # CN\_PPTRM
 
-### Version 0.4.1 (Last Updated: 2023/01/07)
+### Version 0.5.0 (Last Updated: 2025/04/18)
 
 ## About
 CN\_PPTRM (Clara Nguyen's Puyo Puyo Tetris Replay Manager) is a tool which let
@@ -18,6 +18,7 @@ do the job just as well (and be a bit more convenient).
 ## Supported Games
 * Puyo Puyo Tetris (PC)
 * Puyo Puyo Tetris 2 (PC)
+* Puyo Puyo Champions (PC)
 
 ## Preview
 <p align = "center">
@@ -51,3 +52,6 @@ section takes up exactly 360 bytes, and each `DATA` section takes up
 92480 bytes. There is a limit to how large a replay can be. Since they are all
 a fixed length, my tool simply jumps exactly to where the data is stored and
 dumps the contents to a file. Simple huh?
+
+In Puyo Puyo Champions, the `DATA` section isn't indicated with `DATA`, for
+some reason...
